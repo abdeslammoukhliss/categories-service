@@ -1,0 +1,28 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: categories-service
+  namespace: {{ .Values.namespace }}
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/abdeslammoukhliss/categories-service.git
+      ref: main
+    contextDir: /
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "categories-service-app:latest"
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChange: {}
+  resources:
+    limits:
+      cpu: "2"
+      memory: "1Gi"
