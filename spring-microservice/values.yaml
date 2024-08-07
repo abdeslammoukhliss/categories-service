@@ -6,11 +6,11 @@ appVersion: 0.0.1  # Version of the application
 
 replicaCount: 1  # Number of pod replicas to run
 
-namespace: default  # Kubernetes namespace where the application will be deployed
+namespace: abdomokh38-dev  # Kubernetes namespace where the application will be deployed
 
 image:
   repository: abdomokh/categories-service  # Docker image repository for the application
-  pullPolicy: IfNotPresent  # Image pull policy (Always means always pull the image) or IfNotPresent
+  pullPolicy: Always  # Image pull policy (Always means always pull the image) or IfNotPresent
   tag: latest  # Docker image tag
 
 imagePullSecrets:
