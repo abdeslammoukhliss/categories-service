@@ -2,17 +2,19 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_REPO = 'abdomokh/categories-service'
-        DOCKER_TAG = 'latest'
-        HELM_CHART_DIR = 'charts/my-app'  // Adjust to your chart directory
-        OPENSHIFT_PROJECT = 'abdomokh38-dev'
-        HELM_RELEASE_NAME = 'categories-services-realase'
+             DOCKERHUB_REPO = 'abdomokh/categories-service'
+              DOCKER_TAG = 'latest'
+              OPENSHIFT_URL='https://api.sandbox-m4.g2pi.p1.openshiftapps.com:6443'
+              HELM_CHART_DIR = 'spring-microservice/'  // Adjust to your chart directory
+              OPENSHIFT_PROJECT = 'abdomokh38-dev'
+              HELM_RELEASE_NAME = 'categories-services-realase'
+              MAVEN_OPTS = "-Dmaven.repo.local=$WORKSPACE/.m2/repository"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-username/your-spring-microservice-repo.git'
+                git branch: 'main', url: 'https://github.com/abdeslammoukhliss/categories-service.git'
             }
         }
 
@@ -45,9 +47,12 @@ pipeline {
 
         stage('Login to OpenShift') {
             steps {
-                script {
-                    sh "oc login ${OPENSHIFT_URL} --token=${OPENSHIFT_TOKEN}"
-                    sh "oc project ${OPENSHIFT_PROJECT}"
+                withCredentials([string(credentialsId: 'openshift-token', variable: 'OPENSHIFT_TOKEN')]) {
+                    script {
+                        // Login to OpenShift using the token
+                        sh "oc login ${OPENSHIFT_URL} --token=${OPENSHIFT_TOKEN}"
+                        sh "oc project ${OPENSHIFT_PROJECT}"
+                    }
                 }
             }
         }
@@ -62,7 +67,7 @@ pipeline {
                     sh "helm package ${HELM_CHART_DIR}"
 
                     // Install or upgrade the Helm chart
-                    sh "helm upgrade --install ${HELM_RELEASE_NAME} ${HELM_CHART_DIR} --namespace ${OPENSHIFT_PROJECT} --create-namespace"
+                    sh "helm upgrade --install ${HELM_RELEASE_NAME} ${HELM_CHART_DIR} --namespace ${OPENSHIFT_PROJECT}"
                 }
             }
         }

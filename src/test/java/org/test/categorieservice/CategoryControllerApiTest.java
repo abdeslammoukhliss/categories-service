@@ -7,17 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.test.categorieservice.entities.Category;
 import org.test.categorieservice.repositpries.CategoryRepository;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,6 +46,15 @@ public class CategoryControllerApiTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.categories", hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.categories[0].name", is("Utilities")));
+    }
+    @Test
+    void testGetCategoryById() throws Exception {
+        Category category = new Category();
+        category.setName("Utilities");
+        category = categoryRepository.save(category);
+        ResultActions resultActions = mockMvc.perform(get("/categories/" + category.getId()));
+        resultActions.andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is("Utilities")));
     }
 
 
@@ -85,4 +93,5 @@ public class CategoryControllerApiTest {
         // Validate the response
         resultActions.andExpect(status().isCreated());
     }
+
 }
