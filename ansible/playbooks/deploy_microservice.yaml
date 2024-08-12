@@ -6,17 +6,15 @@
       set_fact:
         KUBECONFIG: "{{ lookup('env', 'KUBECONFIG') }}"
 
-    - name: Ensure namespace exists
-      community.kubernetes.k8s:
-        api_version: v1
-        kind: Namespace
-        name: "{{ openshift_project }}"
-        kubeconfig: "{{ KUBECONFIG }}"
+    - name: Add stable chart repo
+      kubernetes.core.helm_repository:
+        name: spring-microservice
+        repo_url: "https://abdeslammoukhliss.github.io/helm-charts/charts"
 
     - name: Deploy with Helm
       community.kubernetes.helm:
-        name: "{{ helm_release_name }}"
-        chart_ref: "{{ helm_chart_dir }}"
-        namespace: "{{ openshift_project }}"
+        name: "category-service"
+        chart_ref: "spring-microservice/spring-microservice"
+        namespace: "abdomokh38-dev"
         kubeconfig: "{{ KUBECONFIG }}"
         state: present
