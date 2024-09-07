@@ -8,13 +8,13 @@
 
     - name: Add stable chart repo
       kubernetes.core.helm_repository:
-        name: spring-microservice
-        repo_url: "https://abdeslammoukhliss.github.io/helm-charts/charts"
-
-    - name: Deploy with Helm
-      community.kubernetes.helm:
-        name: "category-service"
-        chart_ref: "spring-microservice/spring-microservice"
-        namespace: "abdomokh38-dev"
-        kubeconfig: "{{ KUBECONFIG }}"
+        name: categories-microservice
+        repo_url: "http://146.235.233.225:8081/repository/helm-repo/"
+    - name: Deploy latest version of Grafana chart inside monitoring namespace with values
+      kubernetes.core.helm:
+        name: test
+        chart_ref: categories-microservice/categories-microservice
+        chart_version: 1.0.1
+        release_namespace: abdomokh38-dev
         state: present
+        force: true

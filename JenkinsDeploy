@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+
+              KUBECONFIG = credentials('kubeconfig')
+
+
+    }
+
+    stages {
+
+        stage('Checkout') {
+
+            steps {
+                git branch: 'main', url: 'https://github.com/abdeslammoukhliss/categories-service.git'
+            }
+        }
+
+
+           stage('Deploy with Ansible') {
+
+                    steps {
+                        script {
+                    ansiblePlaybook installation: 'ansible', inventory: 'ansible/inventory/developement.yaml', playbook: 'ansible/playbooks/deploy_microservice.yaml', vaultTmpPath: '',extraVars: [
+                                                                                                                                 KUBECONFIG: "${env.KUBECONFIG}"
+                                                                                                                                   ]
+                        }
+                    }
+                }
+
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

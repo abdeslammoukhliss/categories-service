@@ -4,9 +4,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "spring-microservice.fullname" $ }}
+  name: {{ include "categories-microservice.fullname" $ }}
   labels:
-  {{- include "spring-microservice.labels" $ | nindent 4 }}
+  {{- include "categories-microservice.labels" $ | nindent 4 }}
   {{- if .labels }}
   {{- toYaml .labels | nindent 4 }}
   {{- end }}
@@ -29,6 +29,6 @@ spec:
       nodePort: {{ .managementNodePort }}
   {{- end }}
   selector:
-  {{- include "spring-microservice.selectorLabels" $ | nindent 4 }}
+  {{- include "categories-microservice.selectorLabels" $ | nindent 4 }}
 {{- end }}
 {{- end }}

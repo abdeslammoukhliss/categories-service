@@ -7,7 +7,6 @@ import org.test.categorieservice.entities.Category;
 import org.test.categorieservice.repositpries.CategoryRepository;
 
 @SpringBootApplication
-
 public class CategorieServiceApplication implements org.springframework.boot.CommandLineRunner{
 
     public static void main(String[] args) {

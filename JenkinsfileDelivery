@@ -1,0 +1,100 @@
+pipeline {
+    agent any
+
+    environment {
+        // Nexus Configuration
+        NEXUS_URL = '146.235.233.225'
+         DOCKER_REPO_PORT = '8083'
+         NEXUS_PORT = '8443'
+        NEXUS_DOCKER_REPO = 'docker-repo' // Replace with your actual Docker repository name
+        NEXUS_HELM_REPO = 'helm-repo' // Replace with your actual Helm repository name
+
+        // Application Configuration
+        APP_NAME = 'spring-microservice' // Replace with your application name
+        APP_VERSION = '1.0.1' // You can dynamically fetch this from pom.xml if needed
+
+        // Credentials IDs (stored in Jenkins credentials store)
+        NEXUS_CREDENTIALS_ID = 'nexus-credentials' // Replace with your Jenkins credentials ID for Nexus
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/abdeslammoukhliss/categories-service.git' // Replace with your Git repository URL and branch
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn package'
+            }
+            post {
+
+                unsuccessful {
+                    echo 'Tests failed. Aborting pipeline.'
+                    error 'Tests failed.'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${NEXUS_DOCKER_REPO}/${APP_NAME}:${APP_VERSION}")
+                }
+            }
+        }
+
+        stage('Push Docker Image to Nexus') {
+            steps {
+                script {
+                    docker.withRegistry("http://${NEXUS_URL}:${DOCKER_REPO_PORT}", NEXUS_CREDENTIALS_ID) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
+        stage('Package Helm Chart') {
+            steps {
+                sh """
+                    helm dependency update ./helm-charts/spring-microservice
+                    helm package ./helm-charts/spring-microservice --version ${APP_VERSION} --app-version ${APP_VERSION}
+                """
+            }
+        }
+
+        stage('Upload Helm Chart to Nexus') {
+            steps {
+                script {
+                    chartPackage = "${APP_NAME}-${APP_VERSION}.tgz"
+                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
+                        sh """
+                            curl -k -u $NEXUS_USER:$NEXUS_PASSWORD --upload-file ${chartPackage} https://${NEXUS_URL}:${NEXUS_PORT}/repository/${NEXUS_HELM_REPO}/
+                        """
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
