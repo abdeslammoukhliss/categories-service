@@ -1,24 +1,12 @@
-{{- if .Values.route.enabled }}
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ .Values.route.name | quote }}
-  namespace: {{ .Release.Namespace | quote }}
-  annotations:
-    {{- range $key, $value := .Values.route.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+  name: {{ .Values.route.name | quote }}  # Ensure this is not empty
+  namespace: {{ .Values.namespace }}
+
 spec:
-  host: {{ .Values.route.host | quote }}  # Optional
   to:
     kind: Service
     name: {{ include "categories-microservice.fullname" $ }}
   port:
-    targetPort: {{ .Values.route.port.targetPort | quote }}
-  path: {{ .Values.route.path | quote }}
-  tls:
-    termination: {{ .Values.route.tls.termination | quote }}
-    {{- if .Values.route.tls.enabled }}
-    enabled: true
-    {{- end }}
-{{- end }}
+    targetPort: {{ .Values.service.httpPort | quote }}

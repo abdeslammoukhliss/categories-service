@@ -74,6 +74,7 @@ service:
     app: categories-microservice  # Labels applied to the service
 
 route:
+  name: categories_name
   enabled: true  # Name of the OpenShift route
   path: /  # Path for the route
   host:
