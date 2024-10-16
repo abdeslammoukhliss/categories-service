@@ -89,6 +89,7 @@ pipeline {
     post {
         success {
             echo 'Pipeline executed successfully.'
+             build job: 'deploy-categories-service'
         }
         failure {
             echo 'Pipeline failed.'
