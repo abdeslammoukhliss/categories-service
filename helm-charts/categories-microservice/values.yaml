@@ -6,7 +6,7 @@ appVersion: 0.0.1  # Version of the application
 
 replicaCount: 1  # Number of pod replicas to run
 
-namespace: abdomokh38-dev  # Kubernetes namespace where the application will be deployed
+namespace: abdeslam2002-dev  # Kubernetes namespace where the application will be deployed
 
 image:
   repository: 146.235.233.225:8083/repository/docker-repo/categories-microservice # Docker image repository for the application
@@ -26,9 +26,9 @@ nameOverride: "categories-service"  # Override for the name of the application
 fullnameOverride: ""  # Override for the full name of the application
 
 serviceAccount:
-  create: true  # Whether to create a service account for the application
+  create: false  # Whether to create a service account for the application
   annotations: {}  # Annotations to apply to the service account
-  name: ""  # Name of the service account (if not created)
+  name: abdeslam2002  # Name of the service account (if not created)
   automount: true
 annotations:
   prometheus.io/scrape: "true"  # Annotation for Prometheus to scrape metrics from this service

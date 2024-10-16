@@ -15,6 +15,6 @@
         name: test
         chart_ref: categories-microservice/categories-microservice
         chart_version: 1.0.1
-        release_namespace: abdomokh38-dev
+        release_namespace: abdeslam2002-dev
         state: present
         force: true
