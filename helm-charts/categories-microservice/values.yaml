@@ -74,14 +74,14 @@ service:
     app: categories-microservice  # Labels applied to the service
 
 route:
-  enabled: true
-  name: my-app-route  # Name of the OpenShift route
+  enabled: true  # Name of the OpenShift route
   path: /  # Path for the route
+  host:
   tls:
-    enabled: true  # Set to true if you want TLS enabled
+    enabled: false  # Set to true if you want TLS enabled
     termination: edge  # Type of TLS termination: edge, passthrough, or reencrypt
   port:
-    targetPort: 8080  # Port that the service listens on
+    targetPort: 80  # Port that the service listens on
   annotations:  # Optional: add annotations to the route
     haproxy.router.openshift.io/timeout: "5m"
 extraEnv:
