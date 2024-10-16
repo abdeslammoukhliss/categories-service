@@ -1,7 +1,7 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ .Values.route.name | quote }}  # Ensure this is not empty
+  name: {{ .Values.route.name }}  # Ensure this is not empty
   namespace: {{ .Values.namespace }}
 
 spec:
