@@ -73,7 +73,17 @@ service:
     prometheus.io/target: spring-boot-actuator-instance  # Label for Prometheus to target this service
     app: categories-microservice  # Labels applied to the service
 
-
+route:
+  enabled: true
+  name: my-app-route  # Name of the OpenShift route
+  path: /  # Path for the route
+  tls:
+    enabled: true  # Set to true if you want TLS enabled
+    termination: edge  # Type of TLS termination: edge, passthrough, or reencrypt
+  port:
+    targetPort: 8080  # Port that the service listens on
+  annotations:  # Optional: add annotations to the route
+    haproxy.router.openshift.io/timeout: "5m"
 extraEnv:
 
 podLabels:
