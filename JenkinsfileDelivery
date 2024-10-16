@@ -10,7 +10,7 @@ pipeline {
         NEXUS_HELM_REPO = 'helm-repo' // Replace with your actual Helm repository name
 
         // Application Configuration
-        APP_NAME = 'spring-microservice' // Replace with your application name
+        APP_NAME = 'categories-microservice' // Replace with your application name
         APP_VERSION = '1.0.1' // You can dynamically fetch this from pom.xml if needed
 
         // Credentials IDs (stored in Jenkins credentials store)
@@ -64,8 +64,8 @@ pipeline {
         stage('Package Helm Chart') {
             steps {
                 sh """
-                    helm dependency update ./helm-charts/spring-microservice
-                    helm package ./helm-charts/spring-microservice --version ${APP_VERSION} --app-version ${APP_VERSION}
+                    helm dependency update ./helm-charts/${APP_NAME}
+                    helm package ./helm-charts/${APP_NAME} --version ${APP_VERSION} --app-version ${APP_VERSION}
                 """
             }
         }
